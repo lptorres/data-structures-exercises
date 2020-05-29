@@ -1,6 +1,7 @@
 """
 Chapter 1:
     - Euclid's Algorithm
+    - Linked List implementation
 """
 
 
@@ -35,6 +36,9 @@ def gcd_recursive(m: int, n: int):
 
 class Node:
     """Class representing an element in a linked list"""
+    _info = 0
+    _link = None
+
     def __init__(self, info: int, link=None):
         """Initialize a Node.
 
@@ -44,24 +48,41 @@ class Node:
         """
         if link:
             assert type(link) == type(self)
-        self.info = info
-        self.link = link
+        self._info = info
+        self._link = link
 
     def __str__(self):
         """String representation of an instance"""
         return str(self.info)
 
-    def set_link(self, link=None):
-        """Set the value of self.link"""
+    @property
+    def info(self):
+        """Getter for info"""
+        return self._info
+
+    @info.setter
+    def info(self, value):
+        """Setter for info"""
+        assert type(value) == int
+        self._info = value
+
+    @property
+    def link(self):
+        """Getter for link"""
+        return self._link
+
+    @link.setter
+    def link(self, link=None):
+        """Setter for link"""
         if link:
             assert type(link) == type(self)
-        self.link = link
+        self._link = link
 
 
 class LinkedList:
     """Class representing a linked list"""
-    __head = None
-    __tail = None
+    _head = None
+    _tail = None
     __count = 0
 
     def __init__(self, items: list = []):
@@ -75,14 +96,11 @@ class LinkedList:
 
     def __str__(self):
         """Return the string representation of the linked list"""
-        cur = self.__head
         items = []
-        while True:
+        cur = self.head
+        while cur:
             items.append(cur.info)
-            if cur.link:
-                cur = cur.link
-            else:
-                break
+            cur = cur.link
         return str(items)
 
     def __len__(self):
@@ -93,51 +111,65 @@ class LinkedList:
         """Return the element at the selected index"""
         if index >= self.__count:
             raise IndexError
-        cur = self.__head
+        cur = self.head
         for _ in range(index):
             cur = cur.link
         return cur.info
 
+    @property
     def head(self):
         """Return the head of the linked list"""
-        return self.__head
+        return self._head
 
+    @head.setter
+    def head(self, node=None):
+        """Set the head of the linked list"""
+        if node:
+            assert type(node) == Node
+        self._head = node
+
+    @property
     def tail(self):
         """Return the tail of the linked list"""
-        return self.__tail
+        return self._tail
+
+    @tail.setter
+    def tail(self, node=None):
+        """Set the tail of the linked list"""
+        if node:
+            assert type(node) == Node
+        self._tail = node
 
     def append(self, info: int):
         """Insert an element at the end of the list"""
         node = Node(info)
-        if not self.__head:
-            self.__head = node
-        else:
-            cur = self.__head
+        if (cur := self.head):
             while cur.link:
                 cur = cur.link
-            cur.set_link(node)
-        self.__tail = node
+            cur.link = node
+        else:
+            self.head = node
+        self.tail = node
         self.__count += 1
 
     def prepend(self, info: int):
         """Insert an element at the start of the list"""
         node = Node(info)
-        if not self.__head:
-            self.__head = node
+        if not self.head:
+            self.head = node
         else:
-            node.set_link(self.__head)
-            self.__head = node
+            node.link = self.head
+            self.head = node
         self.__count += 1
 
     def insert_sorted(self, info: int):
         """Insert an element into its sorted position in the list"""
-        if not self.__head:
-            self.append(info)
-            return
-        if info < self.__head.info:
-            self.__head = Node(info, link=self.__head)
+        if (cur := self.head):
+            if info < cur.info:
+                self.head = Node(info, link=cur)
+            else:
+                while cur.link and info > cur.link.info:
+                    cur = cur.link
+                cur.link = Node(info, link=cur.link)
         else:
-            cur = self.__head
-            while cur.link and info > cur.link.info:
-                cur = cur.link
-            cur.link = Node(info, link=cur.link)
+            self.append(info)

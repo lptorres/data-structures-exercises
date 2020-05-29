@@ -99,7 +99,7 @@ class TestLinkedList(unittest.TestCase):
         for i in self.random_ints:
             my_list.prepend(i)
             python_list.insert(0, i)
-            self.assertEqual(my_list.head().info, python_list[0])
+            self.assertEqual(my_list.head.info, python_list[0])
 
     def test_append(self):
         """Test appending"""
@@ -108,7 +108,7 @@ class TestLinkedList(unittest.TestCase):
         for i in self.random_ints:
             my_list.append(i)
             python_list.append(i)
-            self.assertEqual(my_list.tail().info, python_list[-1])
+            self.assertEqual(my_list.tail.info, python_list[-1])
 
     def test_len(self):
         """Test the length of the list"""
@@ -123,7 +123,7 @@ class TestLinkedList(unittest.TestCase):
         """Test the elements of the list"""
         python_list = [_ for _ in self.random_ints]
         my_list = LinkedList(python_list)
-        cur = my_list.head()
+        cur = my_list.head
         for item in python_list:
             self.assertEqual(cur.info, item)
             cur = cur.link
