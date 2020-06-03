@@ -1,8 +1,9 @@
 """ Tests for chapter 4"""
+from random import choices, randint
 from string import ascii_letters
 import unittest
 
-from chapter4 import Stack
+from chapter4 import Stack, is_palindrome, is_palindrome2
 
 
 class TestStack(unittest.TestCase):
@@ -36,6 +37,27 @@ class TestStack(unittest.TestCase):
         # so they should all still be in the stack when popping
         for letter in reversed(ascii_letters):
             self.assertEqual(str(stack.pop()), letter)
+
+
+class TestIsPalindrome(unittest.TestCase):
+    """Test the `chapter4.is_palindrome` function"""
+    def generate_palindrome(self, force_palindrome=True):
+        half = ''.join(choices(['a', 'b'], k=randint(1, 500000)))
+        if force_palindrome:
+            return f"{half}c{half[::-1]}"
+        else:
+            i = randint(0, len(half))
+            return f"{half[:i]}c{half[i:]}"
+
+    def test_is_palindrome(self):
+        """Test the `is_palindrome` function using a random string"""
+        for force_palindrome in (True, False):
+            s = self.generate_palindrome(force_palindrome)
+            self.assertEqual(
+                is_palindrome2(s),
+                is_palindrome(s),
+                msg=f"{s}"
+            )
 
 
 if __name__ == '__main__':

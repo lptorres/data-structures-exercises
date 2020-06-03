@@ -90,5 +90,45 @@ class Stack:
 
     def pop(self):
         """Remove the top of the stack"""
+        if self._head is None:
+            raise IndexError("pop from empty stack")
         node, self.head = self._head, self._head.link
         return node
+
+
+def is_palindrome(s):
+    """Check if a string is a palindrome or not.
+
+    In the book, the definition of a palindrome is simplified. The alphabet
+    is only {'a', 'b'} and 'c' denotes the middle of the string. Examples:
+    'c', 'aca', 'bcb', 'abbcbba', 'baacaab', etc. Examples of trings which are
+    not palindromes according to this definition are: 'abba', 'abaabcbabba',
+    'abacab', 'bbaacaabbb', etc.
+    Note: The algorithm is not very pythonic, but the purpose of the
+    exercise is to illustrate the use of Stacks to check for palindromes.
+    """
+    if 'c' not in s:
+        return False
+    stack = Stack()
+    firsthalf = True
+    for letter in s:
+        if letter == 'c':
+            firsthalf = False
+            continue
+        if firsthalf:
+            stack.push(letter)
+        else:
+            try:
+                if letter != str(stack.pop()):
+                    return False
+            except IndexError:
+                return False
+    return True
+
+
+def is_palindrome2(s):
+    """Check if a string is a palindrome or not.
+
+    This is a pythonic implementation of palindrome checking given the same
+    problem definition of a palindrome, but without using stacks"""
+    return ('c' in s and s == s[::-1])
