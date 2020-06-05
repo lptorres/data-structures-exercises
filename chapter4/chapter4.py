@@ -96,7 +96,7 @@ class Stack:
         return node
 
 
-def is_palindrome(s):
+def is_palindrome(s: str):
     """Check if a string is a palindrome or not.
 
     In the book, the definition of a palindrome is simplified. The alphabet
@@ -126,7 +126,7 @@ def is_palindrome(s):
     return True
 
 
-def is_palindrome2(s):
+def is_palindrome2(s: str):
     """Check if a string is a palindrome or not.
 
     This is a pythonic implementation of palindrome checking given the same
@@ -135,16 +135,16 @@ def is_palindrome2(s):
     return ('c' in s and s == s[::-1])
 
 
-def polish(s):
+def polish(s: str):
     """Generate the postfix (Reverse Polish) form of an infix expression.
 
     The infix expression may only contain the five binary arithmetic operators
     +, -, *, /, and ^.
     """
-    def _is_operator(t):
+    def _is_operator(t: str):
         return t in ('+', '-', '*', '/', '^')
 
-    def _icp(t):
+    def _icp(t: str):
         """Determine the in-coming priority of a token"""
         if t == '^':
             return 6
@@ -153,7 +153,7 @@ def polish(s):
         elif t in ('+', '-'):
             return 1
 
-    def _isp(t):
+    def _isp(t: str):
         """Determine the in-stack priority of a token"""
         if t == '^':
             return 5
