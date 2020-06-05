@@ -130,5 +130,56 @@ def is_palindrome2(s):
     """Check if a string is a palindrome or not.
 
     This is a pythonic implementation of palindrome checking given the same
-    problem definition of a palindrome, but without using stacks"""
+    problem definition of a palindrome, but without using stacks.
+    """
     return ('c' in s and s == s[::-1])
+
+
+def polish(s):
+    """Generate the postfix (Reverse Polish) form of an infix expression.
+
+    The infix expression may only contain the five binary arithmetic operators
+    +, -, *, /, and ^.
+    """
+    def _is_operator(t):
+        return t in ('+', '-', '*', '/', '^')
+
+    def _icp(t):
+        """Determine the in-coming priority of a token"""
+        if t == '^':
+            return 6
+        elif t in ('*', '/'):
+            return 3
+        elif t in ('+', '-'):
+            return 1
+
+    def _isp(t):
+        """Determine the in-stack priority of a token"""
+        if t == '^':
+            return 5
+        elif t in ('*', '/'):
+            return 4
+        elif t in ('+', '-'):
+            return 2
+        elif t == '(':
+            return 0
+    output = ''
+    stack = Stack()
+    for token in s:
+        if token == '(':
+            stack.push(token)
+        elif token == ')':
+            try:
+                while (popped := str(stack.pop())) != '(':
+                    output += popped
+            except IndexError:
+                return output
+        elif _is_operator(token):
+            while (h := stack.head) and _icp(token) < _isp(str(h)):
+                output += str(stack.pop())
+            stack.push(token)
+        else:
+            output += token
+    while stack.head:
+        output += str(stack.pop())
+    return output

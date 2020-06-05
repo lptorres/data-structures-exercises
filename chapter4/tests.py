@@ -3,7 +3,7 @@ from random import choices, randint
 from string import ascii_letters
 import unittest
 
-from chapter4 import Stack, is_palindrome, is_palindrome2
+from chapter4 import Stack, is_palindrome, is_palindrome2, polish
 
 
 class TestStack(unittest.TestCase):
@@ -42,6 +42,7 @@ class TestStack(unittest.TestCase):
 class TestIsPalindrome(unittest.TestCase):
     """Test the `chapter4.is_palindrome` function"""
     def generate_palindrome(self, force_palindrome=True):
+        """Generate a palindrome (or not)"""
         half = ''.join(choices(['a', 'b'], k=randint(1, 500000)))
         if force_palindrome:
             return f"{half}c{half[::-1]}"
@@ -58,6 +59,23 @@ class TestIsPalindrome(unittest.TestCase):
                 is_palindrome(s),
                 msg=f"{s}"
             )
+
+
+class TestPolish(unittest.TestCase):
+    """Test the `chapter4.polish` function"""
+    expressions = [
+        ("ABCD-E2^/+*F+", "(A*(B+(C-D)/E^2)+F)"),
+        ("ABC*DE*/+", "A+B*C/(D*E)"),
+        ("BD2^^CE^/", "B^D^2/C^E"),
+        ("AB6D+E-8/*G3^-", "A*(B(6+D-E)/8)-G^3"),
+        ("AXBXCXD*+*+*+", "A+X*(B+X*(C+X*D))"),
+        ("ABC+D^/E*FG-/H*", "A/(B+C)^D*E/(F-G)*H"),
+        ("AB-CD-2^F+*G12/^/", "((A-B)*((C-D)^2+F)/G^(1/2))")
+    ]
+
+    def test_polish(self):
+        for postfix, infix in self.expressions:
+            self.assertEqual(postfix, polish(infix))
 
 
 if __name__ == '__main__':
