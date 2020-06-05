@@ -4,6 +4,8 @@ Chapter 4:
     - Converting infix expressions to postfix form
     - Evaluating postfix expressions
 """
+from collections import defaultdict
+import operator as op
 
 
 class Node:
@@ -135,15 +137,17 @@ def is_palindrome2(s: str):
     return ('c' in s and s == s[::-1])
 
 
+def is_operator(t: str):
+    """Check if the token is an operator."""
+    return t in ('+', '-', '*', '/', '^')
+
+
 def polish(s: str):
     """Generate the postfix (Reverse Polish) form of an infix expression.
 
     The infix expression may only contain the five binary arithmetic operators
     +, -, *, /, and ^.
     """
-    def _is_operator(t: str):
-        return t in ('+', '-', '*', '/', '^')
-
     def _icp(t: str):
         """Determine the in-coming priority of a token"""
         if t == '^':
@@ -174,7 +178,7 @@ def polish(s: str):
                     output += popped
             except IndexError:
                 return output
-        elif _is_operator(token):
+        elif is_operator(token):
             while (h := stack.head) and _icp(token) < _isp(str(h)):
                 output += str(stack.pop())
             stack.push(token)
@@ -183,3 +187,34 @@ def polish(s: str):
     while stack.head:
         output += str(stack.pop())
     return output
+
+
+def evaluate(postfix: str, values: dict):
+    """Evaluate a postfix expression"""
+    OPS = {
+        '+': op.add,
+        '-': op.sub,
+        '*': op.mul,
+        '/': op.truediv,
+        '^': op.pow
+    }
+    stack = Stack()
+
+    def _eval(t):
+        if is_operator(t):
+            try:
+                popped = str(stack.pop())
+                second = values[popped] if popped in values else float(popped)
+                popped = str(stack.pop())
+                first = values[popped] if popped in values else float(popped)
+            except ValueError as e:
+                raise Exception(f"Value for {e.args[0]} not defined!")
+            else:
+                operator = OPS[t]
+                stack.push(operator(first, second))
+        else:
+            stack.push(t)
+
+    for token in postfix:
+        _eval(token)
+    return float(str(stack.pop()))

@@ -3,7 +3,7 @@ from random import choices, randint
 from string import ascii_letters
 import unittest
 
-from chapter4 import Stack, is_palindrome, is_palindrome2, polish
+from chapter4 import Stack, is_palindrome, is_palindrome2, polish, evaluate
 
 
 class TestStack(unittest.TestCase):
@@ -67,7 +67,7 @@ class TestPolish(unittest.TestCase):
         ("ABCD-E2^/+*F+", "(A*(B+(C-D)/E^2)+F)"),
         ("ABC*DE*/+", "A+B*C/(D*E)"),
         ("BD2^^CE^/", "B^D^2/C^E"),
-        ("AB6D+E-8/*G3^-", "A*(B(6+D-E)/8)-G^3"),
+        ("AB6D+E-*8/*G3^-", "A*(B*(6+D-E)/8)-G^3"),
         ("AXBXCXD*+*+*+", "A+X*(B+X*(C+X*D))"),
         ("ABC+D^/E*FG-/H*", "A/(B+C)^D*E/(F-G)*H"),
         ("AB-CD-2^F+*G12/^/", "((A-B)*((C-D)^2+F)/G^(1/2))")
@@ -75,7 +75,35 @@ class TestPolish(unittest.TestCase):
 
     def test_polish(self):
         for postfix, infix in self.expressions:
-            self.assertEqual(postfix, polish(infix))
+            self.assertEqual(polish(infix), postfix)
+
+
+class TestEvaluate(unittest.TestCase):
+    """Test the `chapter4.evaluate` function"""
+    expressions = [
+        ("ABCD-E2^/+*F+", -41.4375),
+        ("ABC*DE*/+", 0.33333333333333304),
+        ("BD2^^CE^/", -9851.954833984375),
+        ("AB6D+E-*8/*G3^-", -237.875),
+        ("AXBXCXD*+*+*+", 3735.0),
+        ("ABC+D^/E*FG-/H*", -12.857142857142858),
+        ("AB-CD-2^F+*G12/^/", 83.28265125462806)
+    ]
+    values = {
+        'A': 5,
+        'B': -7,
+        'C': 8,
+        'D': 3,
+        'E': 4,
+        'F': -8,
+        'G': 6,
+        'H': 9,
+        'X': 10
+    }
+
+    def test_evaluate(self):
+        for postfix, value in self.expressions:
+            self.assertEqual(evaluate(postfix, self.values), value)
 
 
 if __name__ == '__main__':
