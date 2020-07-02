@@ -1,7 +1,6 @@
 """
 Chapter 5:
     - Queue implementation (using a linked list)
-    - Deque implementation (using a linked list)
     - Topological sort
 """
 from collections import defaultdict
@@ -137,7 +136,7 @@ def topological_sort(pairs_in: tuple):
     # build the partial ordering
     partial_ordering = _build_partial_ordering()
     # initialize the output queue
-    output = Queue()
+    out_queue = Queue()
 
     # Guard against circular dependencies
     if all([o['count'] > 0 for o in partial_ordering.values()]):
@@ -146,13 +145,14 @@ def topological_sort(pairs_in: tuple):
     # Put initial (no predecessors) items into the output queue
     for k, info in partial_ordering.items():
         if info['count'] == 0:
-            output.enqueue(k)
-
-    while len(output) > 0:
-        item = output.dequeue()
+            out_queue.enqueue(k)
+    out = []
+    while len(out_queue) > 0:
+        item = out_queue.dequeue()
         descendants = partial_ordering[item.info]['list']
-        print(item, end=' ')
+        out.append(item.info)
         for desc in descendants:
             partial_ordering[desc]['count'] -= 1
             if partial_ordering[desc]['count'] == 0:
-                output.enqueue(desc)
+                out_queue.enqueue(desc)
+    return out
